@@ -29,8 +29,10 @@ class QuestionView extends Component {
         this.setState({
           questions: result.questions,
           totalQuestions: result.total_questions,
-          categories: result.categories,
-          currentCategory: result.current_category })
+          categories: result.categories
+          // removed 'currentCategory' following advice from a mentor that it isn't required
+          // see https://knowledge.udacity.com/questions/281844
+        })
         return;
       },
       error: (error) => {
@@ -78,7 +80,7 @@ class QuestionView extends Component {
 
   submitSearch = (searchTerm) => {
     $.ajax({
-      url: `/questions`, //TODO: update request URL
+      url: `/questions/search`, //TODO: update request URL
       type: "POST",
       dataType: 'json',
       contentType: 'application/json',

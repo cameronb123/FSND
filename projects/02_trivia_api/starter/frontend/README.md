@@ -51,39 +51,50 @@ Currently, when a user plays the game they play up to five questions of the chos
 
 You can optionally update this game play to increase the number of questions or whatever other game mechanics you decide. Make sure to specify the new mechanics of the game in the README of the repo you submit so the reviewers are aware that the behavior is correct. 
 
+### Error Handling
 
+Errors are returned as JSON objects in the following format:
+```js
+{
+    'success': false,
+    'error': 404,
+    'message': 'resource not found'
+}
+```
+The API will return five error types when requests fail:
+- 400: Bad request
+- 404: Resource not found
+- 405: Method not allowed
+- 422: Unprocessable
+- 500: Internal server error
 
->**Spoiler Alert:** If needed, there are details below regarding the expected endpoints and behavior. But, ONLY consult there if necessary, so you give yourself the opportunity to practice understanding code!
-
-# DO NOT PROCEED: ENDPOINT SPOILERS
->Only read the below to confirm your notes regarding the expected API endpoint behavior based on reading the frontend codebase. 
-
-
-**Here are the expected endpoints and behavior**:
-
+### Endpoints
 
 ```js
 GET '/categories'
 - Fetches a dictionary of categories in which the keys are the ids and the value is the corresponding string of the category
 - Request Arguments: None
-- Returns: An object with a single key, categories, that contains an object of id: category_string key:value pairs. 
+- Returns: A success message, an object with a single key, categories, that contains an object of id: category_string key:value pairs, and the total number of categories. 
 {
+    'success': true,
     'categories': { '1' : "Science",
     '2' : "Art",
     '3' : "Geography",
     '4' : "History",
     '5' : "Entertainment",
-    '6' : "Sports" }
+    '6' : "Sports" },
+    'total_categories': 6
 }
 ```
 
 
 ```js
 GET '/questions?page=${integer}'
-- Fetches a paginated set of questions, a total number of questions, all categories and current category string. 
+- Fetches a paginated set of questions, a total number of questions, and all categories. 
 - Request Arguments: page - integer
-- Returns: An object with 10 paginated questions, total questions, object including all categories, and current category string
+- Returns: A success message, an object with 10 paginated questions, total questions, and object including all categories
 {
+    'success': true,
     'questions': [
         {
             'id': 1,
@@ -93,14 +104,13 @@ GET '/questions?page=${integer}'
             'category': 2
         },
     ],
-    'totalQuestions': 100,
+    'total_questions': 100,
     'categories': { '1' : "Science",
     '2' : "Art",
     '3' : "Geography",
     '4' : "History",
     '5' : "Entertainment",
-    '6' : "Sports" },
-    'currentCategory': 'History'
+    '6' : "Sports" }
 }
 ```
 
@@ -108,8 +118,9 @@ GET '/questions?page=${integer}'
 GET '/categories/${id}/questions'
 - Fetches questions for a cateogry specified by id request argument 
 - Request Arguments: id - integer
-- Returns: An object with questions for the specified category, total questions, and current category string 
+- Returns: A success message, an object with questions for the specified category, total questions in that category, and current category string 
 {
+    'success': true,
     'questions': [
         {
             'id': 1,
@@ -119,8 +130,8 @@ GET '/categories/${id}/questions'
             'category': 4
         },
     ],
-    'totalQuestions': 100,
-    'currentCategory': 'History'
+    'total_questions': 100,
+    'current_category': 'History'
 }
 ```
 
@@ -128,7 +139,21 @@ GET '/categories/${id}/questions'
 DELETE '/questions/${id}'
 - Deletes a specified question using the id of the question
 - Request Arguments: id - integer
-- Returns: Does not need to return anything besides the appropriate HTTP status code. Optionally can return the id of the question. If you are able to modify the frontend, you can have it remove the question using the id instead of refetching the questions. 
+- Returns: A success message, the id of the deleted question, an object with the remaining questions paginated, and the new total number of questions
+{
+    'success': true,
+    'deleted': 15,
+    'questions': [
+        {
+            'id': 1,
+            'question': 'This is a question',
+            'answer': 'This is an answer', 
+            'difficulty': 5,
+            'category': 2
+        },
+    ],
+    'total_questions': 100
+}
 ```
 
 ```js
@@ -137,8 +162,9 @@ POST '/quizzes'
 - Request Body: 
 {'previous_questions':  an array of question id's such as [1, 4, 20, 15]
 'quiz_category': a string of the current category }
-- Returns: a single new question object 
+- Returns: a success message and a single new question object 
 {
+    'success': true,
     'question': {
         'id': 1,
         'question': 'This is a question',
@@ -157,19 +183,33 @@ POST '/questions'
     'question':  'Heres a new question string',
     'answer':  'Heres a new answer string',
     'difficulty': 1,
-    'category': 3,
+    'category': 3
 }
-- Returns: Does not return any new data
+- Returns: a success message, the id of the new question, an object with 10 paginated questions, and the new total number of questions
+{
+    'success': true,
+    'created': 28,
+    'questions': [
+        {
+            'id': 1,
+            'question': 'This is a question',
+            'answer': 'This is an answer', 
+            'difficulty': 5,
+            'category': 2
+        },
+    ],
+    'total_questions': 101
+}
 ```
 
 ```js
-POST '/questions'
+POST '/questions/search'
 - Sends a post request in order to search for a specific question by search term 
 - Request Body: 
 {
     'searchTerm': 'this is the term the user is looking for'
 }
-- Returns: any array of questions, a number of totalQuestions that met the search term and the current category string 
+- Returns: a success message, an array of questions and the number of questions that met the search term
 {
     'questions': [
         {
@@ -180,7 +220,6 @@ POST '/questions'
             'category': 5
         },
     ],
-    'totalQuestions': 100,
-    'currentCategory': 'Entertainment'
+    'total_questions': 100
 }
 ```
