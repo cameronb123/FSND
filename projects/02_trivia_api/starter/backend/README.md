@@ -75,13 +75,6 @@ One note before you delve into your tasks: for each endpoint, you are expected t
 
 9. Create error handlers for all expected errors including 400, 404, 422 and 500. 
 
-
-
-## Review Comment to the Students
-```
-This README is missing documentation of your endpoints. Below is an example for your endpoint to get all categories. Please use it as a reference for creating your documentation and resubmit your code.
-```
-
 ### Error Handling
 
 Errors are returned as JSON objects in the following format:
@@ -253,6 +246,7 @@ POST '/questions/search'
     ],
     'total_questions': 100
 }
+```
 
 ## Testing
 To run the tests, run
