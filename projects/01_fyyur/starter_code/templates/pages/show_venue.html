@@ -75,7 +75,19 @@
 	</div>
 </section>
 
+
 <a href="/venues/{{ venue.id }}/edit"><button class="btn btn-primary btn-lg">Edit</button></a>
+<!-- Add in delete button-->
+<!-- <a href="/venues/{{ venue.id }}"><button class="btn btn-primary btn-lg" id="delete-button">Delete</button></a>
+
+<script>
+	// Delete the venue when the Delete button is pressed
+	document.getElementById('delete-button').onclick = function(e) {
+		console.log('event', e)
+		//fetch('/venues/venue')
+	}
+
+</script> -->
 
 {% endblock %}
 
